@@ -1,27 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import marksheetPdf from '../assets/Graduation_Final_Result.pdf';
 import certificatePdf from '../assets/Passing_Certificate.pdf';
+import resumePdf from '../assets/resume.pdf'; // Import resume from assets
 
 const Resume = () => {
-  const [resumePdf, setResumePdf] = useState(null);
-  const [showUploadModal, setShowUploadModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewDocumentUrl, setViewDocumentUrl] = useState(null);
   const [viewDocumentTitle, setViewDocumentTitle] = useState('');
-  const [passcode, setPasscode] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [error, setError] = useState('');
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-
-  const CORRECT_PASSCODE = '9960';
-
-  // Load resume from localStorage on component mount
-  useEffect(() => {
-    const savedResume = localStorage.getItem('resumePdf');
-    if (savedResume) {
-      setResumePdf(savedResume);
-    }
-  }, []);
 
   const education = [
     {
@@ -57,54 +42,6 @@ const Resume = () => {
     },
   ];
 
-  const handlePasscodeSubmit = (e) => {
-    e.preventDefault();
-    if (passcode === CORRECT_PASSCODE) {
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('Incorrect passcode. Please try again.');
-      setPasscode('');
-    }
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        setResumePdf(base64String);
-        localStorage.setItem('resumePdf', base64String); // Save to localStorage
-        setUploadSuccess(true);
-        setTimeout(() => {
-          setShowUploadModal(false);
-          setIsAuthenticated(false);
-          setPasscode('');
-          setUploadSuccess(false);
-        }, 2000);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setError('Please upload a valid PDF file.');
-    }
-  };
-
-  const openUploadModal = () => {
-    setShowUploadModal(true);
-    setIsAuthenticated(false);
-    setPasscode('');
-    setError('');
-  };
-
-  const closeModal = () => {
-    setShowUploadModal(false);
-    setIsAuthenticated(false);
-    setPasscode('');
-    setError('');
-    setUploadSuccess(false);
-  };
-
   const openDocument = (url, title) => {
     setViewDocumentUrl(url);
     setViewDocumentTitle(title);
@@ -128,128 +65,28 @@ const Resume = () => {
             My educational background and certifications
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {resumePdf ? (
-              <>
-                <button
-                  onClick={() => openDocument(resumePdf, 'Resume')}
-                  className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  View Resume
-                </button>
-                <a
-                  href={resumePdf}
-                  download="Suyog_Dighe_Resume.pdf"
-                  className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Download Resume
-                </a>
-              </>
-            ) : (
-              <div className="text-gray-500 dark:text-gray-400 italic">
-                No resume uploaded yet
-              </div>
-            )}
             <button
-              onClick={openUploadModal}
-              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200"
+              onClick={() => openDocument(resumePdf, 'Resume')}
+              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
-              Upload Resume
+              View Resume
             </button>
+            <a
+              href={resumePdf}
+              download="Suyog_Dighe_Resume.pdf"
+              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Download Resume
+            </a>
           </div>
         </div>
-
-        {/* Upload Modal */}
-        {showUploadModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
-              {/* Close Button */}
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                Upload Resume
-              </h3>
-
-              {!isAuthenticated ? (
-                <form onSubmit={handlePasscodeSubmit} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Enter Passcode
-                    </label>
-                    <input
-                      type="password"
-                      value={passcode}
-                      onChange={(e) => setPasscode(e.target.value)}
-                      maxLength={4}
-                      placeholder="Enter 4-digit passcode"
-                      className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white text-center text-2xl tracking-widest"
-                      autoFocus
-                    />
-                    {error && (
-                      <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                        {error}
-                      </p>
-                    )}
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-200"
-                  >
-                    Verify Passcode
-                  </button>
-                </form>
-              ) : uploadSuccess ? (
-                <div className="text-center py-8">
-                  <div className="text-6xl mb-4">✅</div>
-                  <p className="text-xl font-semibold text-green-600 dark:text-green-400">
-                    Resume Uploaded Successfully!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">🔓</div>
-                    <p className="text-green-600 dark:text-green-400 font-semibold mb-4">
-                      Passcode Verified!
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Select PDF File
-                    </label>
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      onChange={handleFileUpload}
-                      className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer"
-                    />
-                    {error && (
-                      <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                        {error}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {/* Education */}
